@@ -85,14 +85,16 @@ export class ArticleListComponent {
       .query(this.query)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data) => {
+        console.log('data', data)
         this.loading = LoadingState.LOADED;
-        this.results = data.articles;
+        this.results = data.data;
 
         // Used from http://www.jstips.co/en/create-range-0...n-easily-using-one-line/
         this.totalPages = Array.from(
-          new Array(Math.ceil(data.articlesCount / this.limit)),
+          new Array(Math.ceil(data.total / this.limit)),
           (val, index) => index + 1,
         );
       });
+    console.log('this.results', this.results)
   }
 }

@@ -54,7 +54,7 @@ export default class EditorComponent implements OnInit {
       ])
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(([article, { user }]) => {
-          if (user.username === article.author.username) {
+          if (user.username === article.name) {
             this.tagList = article.tagList;
             this.articleForm.patchValue(article);
           } else {

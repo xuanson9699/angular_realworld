@@ -25,20 +25,29 @@ export class UserService {
   login(credentials: {
     email: string;
     password: string;
-  }): Observable<{ user: User }> {
+  }): Observable<User> {
     return this.http
-      .post<{ user: User }>("/users/login", { user: credentials })
-      .pipe(tap(({ user }) => this.setAuth(user)));
+      .post<User>("/users/login", { user: credentials })
+      .pipe(tap((user) => this.setAuth(user)));
   }
 
+  // register(credentials: {
+  //   // username: string;
+  //   email: string;
+  //   password: string;
+  // }): Observable<{ user: User }> {
+  //   return this.http
+  //     .post<{ user: User }>("/register", { ...credentials})
+  //     .pipe(tap(({ user }) => this.setAuth(user)));
+  // }
+
   register(credentials: {
-    username: string;
     email: string;
     password: string;
-  }): Observable<{ user: User }> {
+  }): Observable<User> {
     return this.http
-      .post<{ user: User }>("/users", { user: credentials })
-      .pipe(tap(({ user }) => this.setAuth(user)));
+      .post<User>("/register", { ...credentials})
+      .pipe(tap(( user ) => this.setAuth(user)));
   }
 
   logout(): void {
@@ -65,6 +74,7 @@ export class UserService {
   }
 
   setAuth(user: User): void {
+    console.log('user', user)
     this.jwtService.saveToken(user.token);
     this.currentUserSubject.next(user);
   }

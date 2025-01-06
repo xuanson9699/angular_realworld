@@ -15,13 +15,13 @@ import { FavoriteButtonComponent } from "./favorite-button.component";
           (toggle)="toggleFavorite($event)"
           class="pull-xs-right"
         >
-          {{ article.favoritesCount }}
+          {{ article.name }}
         </app-favorite-button>
       </app-article-meta>
 
       <a [routerLink]="['/article', article.slug]" class="preview-link">
-        <h1>{{ article.title }}</h1>
-        <p>{{ article.description }}</p>
+        <h1>{{ article.year }}</h1>
+        <p>{{ article.color }}</p>
         <span>Read more...</span>
         <ul class="tag-list">
           @for (tag of article.tagList; track tag) {

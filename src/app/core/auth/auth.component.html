@@ -16,16 +16,6 @@
         <form [formGroup]="authForm" (ngSubmit)="submitForm()">
           <fieldset [disabled]="isSubmitting">
             <fieldset class="form-group">
-              @if (authType === "register") {
-                <input
-                  formControlName="username"
-                  placeholder="Username"
-                  class="form-control form-control-lg"
-                  type="text"
-                />
-              }
-            </fieldset>
-            <fieldset class="form-group">
               <input
                 formControlName="email"
                 placeholder="Email"
