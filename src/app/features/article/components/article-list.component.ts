@@ -1,11 +1,12 @@
-import { Component, DestroyRef, inject, Input } from "@angular/core";
+import { Component, DestroyRef, inject, Input, OnInit } from "@angular/core";
 import { ArticlesService } from "../services/articles.service";
 import { ArticleListConfig } from "../models/article-list-config.model";
 import { Article } from "../models/article.model";
 import { ArticlePreviewComponent } from "./article-preview.component";
-import { NgClass, NgForOf, NgIf } from "@angular/common";
+import { CommonModule, NgClass, NgForOf, NgIf } from "@angular/common";
 import { LoadingState } from "../../../core/models/loading-state.model";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Observable, of } from "rxjs";
 
 @Component({
   selector: "app-article-list",
@@ -15,7 +16,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     }
 
     @if (loading === LoadingState.LOADED) {
-      @for (article of results; track article.slug) {
+      @for (article of articles$ | async; track article.slug) {
         <app-article-preview [article]="article" />
       } @empty {
         <div class="article-preview">No articles are here... yet.</div>
@@ -37,7 +38,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
       </nav>
     }
   `,
-  imports: [ArticlePreviewComponent, NgForOf, NgClass, NgIf],
+  imports: [ArticlePreviewComponent, NgForOf, NgClass, NgIf, CommonModule],
   styles: `
     .page-link {
       cursor: pointer;
@@ -45,7 +46,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
   `,
   standalone: true,
 })
-export class ArticleListComponent {
+export class ArticleListComponent implements OnInit {
   query!: ArticleListConfig;
   results: Article[] = [];
   currentPage = 1;
@@ -66,6 +67,12 @@ export class ArticleListComponent {
 
   constructor(private articlesService: ArticlesService) {}
 
+  articles$ : Observable<Article[]> = of([])
+
+  ngOnInit(): void {
+    this.articles$ = this.articlesService.articles$
+  }
+
   setPageTo(pageNumber: number) {
     this.currentPage = pageNumber;
     this.runQuery();
@@ -85,16 +92,12 @@ export class ArticleListComponent {
       .query(this.query)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data) => {
-        console.log('data', data)
         this.loading = LoadingState.LOADED;
         this.results = data.data;
-
-        // Used from http://www.jstips.co/en/create-range-0...n-easily-using-one-line/
         this.totalPages = Array.from(
           new Array(Math.ceil(data.total / this.limit)),
           (val, index) => index + 1,
         );
       });
-    console.log('this.results', this.results)
   }
 }

@@ -11,7 +11,7 @@ import { AsyncPipe, NgClass, NgForOf, NgIf } from "@angular/common";
 import { MarkdownPipe } from "../../../../shared/pipes/markdown.pipe";
 import { ListErrorsComponent } from "../../../../shared/components/list-errors.component";
 import { ArticleCommentComponent } from "../../components/article-comment.component";
-import { catchError } from "rxjs/operators";
+import { catchError, filter } from "rxjs/operators";
 import { combineLatest, throwError } from "rxjs";
 import { Comment } from "../../models/comment.model";
 import { IfAuthenticatedDirective } from "../../../../core/auth/if-authenticated.directive";
@@ -65,24 +65,29 @@ export default class ArticleComponent implements OnInit {
 
   ngOnInit(): void {
     const slug = this.route.snapshot.params["slug"];
-    combineLatest([
-      this.articleService.get(slug),
-      this.commentsService.getAll(slug),
-      this.userService.currentUser,
-    ])
-      .pipe(
-        catchError((err) => {
-          void this.router.navigate(["/"]);
-          return throwError(() => err);
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(([article, comments, currentUser]) => {
-        this.article = article;
-        this.comments = comments;
-        this.currentUser = currentUser;
-        this.canModify = currentUser?.username === article.name;
-      });
+    const slugLog = this.route.params.subscribe((params) => console.log("params", params));
+    const slugLog2 = this.route.queryParamMap.subscribe((paramMap) => console.log("paramMap", paramMap));
+    console.log("slugLog", slugLog, this.route.paramMap, this.route.snapshot )
+    this.articleService.getArticles(slug).pipe(filter((article) => !!article)).subscribe((article) => (this.article = article));
+    console.log("this.article", this.article)
+    // combineLatest([
+    //   this.articleService.get(slug),
+    //   this.commentsService.getAll(slug),
+    //   this.userService.currentUser,
+    // ])
+    //   .pipe(
+    //     catchError((err) => {
+    //       void this.router.navigate(["/"]);
+    //       return throwError(() => err);
+    //     }),
+    //     takeUntilDestroyed(this.destroyRef),
+    //   )
+    //   .subscribe(([article, comments, currentUser]) => {
+    //     this.article = article;
+    //     this.comments = comments;
+    //     this.currentUser = currentUser;
+    //     this.canModify = currentUser?.username === article.name;
+    //   });
   }
 
   onToggleFavorite(favorited: boolean): void {

@@ -9,6 +9,10 @@ import { Router } from "@angular/router";
 
 @Injectable({ providedIn: "root" })
 export class UserService {
+
+  // Đặc điểm của BehaviorSubject:
+  //  Luôn giữ trạng thái hiện tại: Ngay cả khi một Subscriber đăng ký sau, nó sẽ nhận được giá trị hiện tại hoặc giá trị mặc định.
+  //  Thường được sử dụng để lưu trạng thái (state) hoặc dữ liệu được chia sẻ giữa các component.
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser = this.currentUserSubject
     .asObservable()

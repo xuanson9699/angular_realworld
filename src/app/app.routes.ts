@@ -49,8 +49,14 @@ export const routes: Routes = [
     ],
   },
   {
-    path: "article/:slug",
-    loadComponent: () =>
-      import("./features/article/pages/article/article.component"),
+    path: "article",
+    // loadComponent: () => import("./features/article/pages/home/home.component"),
+    children: [
+      {
+        path: ":slug",
+        loadComponent: () =>
+          import("./features/article/pages/article/article.component"),
+      },
+    ],
   },
 ];
