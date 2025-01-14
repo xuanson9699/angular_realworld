@@ -59,4 +59,8 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: "reactive-forms",
+    loadComponent: () => import("./features/form/pages/reactive-forms/reactive-forms.component"),
+  }
 ];

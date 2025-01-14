@@ -1,0 +1,9 @@
+<button (click)="toggleDisable()">Toggle name state</button>
+<form [formGroup]="form">
+  <input
+    class="form-control"
+    type="text"
+    formControlName="name"
+    [disabled]="disabledName"
+  />
+</form>
